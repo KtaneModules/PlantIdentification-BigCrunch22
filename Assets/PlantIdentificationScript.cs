@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,6 @@ public class PlantIdentificationScript : MonoBehaviour
 	public Sprite DefaultSprite;
 	public Sprite[] CheckOrCross;
 	public Sprite[] Brain;
-	public Sprite[] ExtraSprites;
 	public Sprite Morticulturalist;
 	public Material[] ImageLighting;
 	
@@ -271,8 +270,7 @@ public class PlantIdentificationScript : MonoBehaviour
 		Toggleable = false;
 		ActiveBorder = true;
 		Playable = false;
-		Debug.LogFormat("[Plant Identification #{0}] The plant shown: {1}", moduleId, SeedPacketIdentifier[Unique[Stages]]);
-		Debug.LogFormat("[Plant Identification #{0}] The plant's name: {1}", moduleId, SeedPacketIdentifier[Unique[Stages]].name);
+		Debug.LogFormat("[Plant Identification #{0}] The plant's name that was shown: {1}", moduleId, SeedPacketIdentifier[Unique[Stages]].name);
 		SeedPacket.sprite = SeedPacketIdentifier[Unique[Stages]];
 		SeedPacket.material = ImageLighting[1];
 		Audio.PlaySoundAtTransform(Buffer[UnityEngine.Random.Range(0,5)].name, transform);
@@ -321,7 +319,6 @@ public class PlantIdentificationScript : MonoBehaviour
 					LightBulbs[2].material = TheLights[1];
 					SeedPacket.sprite = Morticulturalist;
 					Debug.LogFormat("[Plant Identification #{0}] The module is done.", moduleId);
-					Debug.LogFormat("[Plant Identification #{0}] {1}", moduleId,Morticulturalist);
 					Module.HandlePass();
 					Animating1 = false;
 			}
@@ -351,7 +348,6 @@ public class PlantIdentificationScript : MonoBehaviour
 		else
 		{
 			Debug.LogFormat("[Plant Identification #{0}] The text does not match the name of the plant. Oh no!", moduleId);
-			Debug.LogFormat("[Plant Identification #{0}] {1}{1}{1}", moduleId, ExtraSprites[0]);
 			Animating1 = true;
 			SeedPacket.sprite = CheckOrCross[1];
 			SecondMusic.clip = NotBuffer[4];
@@ -577,7 +573,8 @@ public class PlantIdentificationScript : MonoBehaviour
 				yield return "sendtochaterror The key is not yet pressable. Command was ignored";
 				yield break;
 			}
-			
+			yield return "solve";
+			yield return "strike";
 				Enter.OnInteract();
 		}
 		

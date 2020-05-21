@@ -15538,6 +15538,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6f245f702965a79468b761ec34ee5133, type: 3}
   - {fileID: 21300000, guid: 08ed9dee79b8d5b498fdcbaff8486eb1, type: 3}
   - {fileID: 21300000, guid: 0cd0571dd77e967428774a16f64e3dd5, type: 3}
+  - {fileID: 21300000, guid: bc7aca311639f734fb38419f0efcbbe2, type: 3}
+  - {fileID: 21300000, guid: 86c3f6a2e5319ad47a9f4166a9d42d35, type: 3}
+  - {fileID: 21300000, guid: 065a902e19bf0864a86be81e9c496e08, type: 3}
+  - {fileID: 21300000, guid: 5f95eb2acb57f654b960894f5570da97, type: 3}
   DefaultSprite: {fileID: 21300000, guid: f77872fa18c1eb446aa4afb12979fdd3, type: 3}
   CheckOrCross:
   - {fileID: 21300000, guid: acee479f998eb1e4d81afb29b8c5e089, type: 3}
@@ -15545,8 +15549,6 @@ MonoBehaviour:
   Brain:
   - {fileID: 21300000, guid: ad13bdad284fc20468bf8602763b290d, type: 3}
   - {fileID: 21300000, guid: 48ca67d12fd846541b8ca18dcae3d320, type: 3}
-  ExtraSprites:
-  - {fileID: 21300000, guid: 4ffe0ebd6497d314193b39515e2a8f15, type: 3}
   Morticulturalist: {fileID: 21300000, guid: 7c3896f97e1ee7f45a7704cbd1cea061, type: 3}
   ImageLighting:
   - {fileID: 2100000, guid: 18be747f2a01e134a9f1753d8c07b387, type: 2}
