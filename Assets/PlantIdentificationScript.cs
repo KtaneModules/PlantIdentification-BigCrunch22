@@ -1,10 +1,7 @@
-﻿﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using KModkit;
 
 public class PlantIdentificationScript : MonoBehaviour
 {
@@ -56,7 +53,6 @@ public class PlantIdentificationScript : MonoBehaviour
 	//Logging
     static int moduleIdCounter = 1;
     int moduleId;
-    private bool ModuleSolved;
 
 	void Awake()
 	{
@@ -115,7 +111,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	{
 		for (int c = 0; c < Unique.Count(); c++)
         {
-            Unique[c] = UnityEngine.Random.Range(0, SeedPacketIdentifier.Count());
+            Unique[c] = Random.Range(0, SeedPacketIdentifier.Count());
         }
 		
 		if (Unique[0] == Unique[1] || Unique[0] == Unique[2] || Unique[1] == Unique[2])
@@ -141,7 +137,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	void TypableKey(int KeyPress)
 	{
 		TypableText[KeyPress].AddInteractionPunch(.2f);
-		Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
+		Audio.PlaySoundAtTransform(NotBuffer[1].name, TypableText[KeyPress].transform);
 		if (Playable && Enterable)
 		{
 			float width = 0;
@@ -171,7 +167,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	void PressBackspace()
 	{
 		Backspace.AddInteractionPunch(.2f);
-		Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
+		Audio.PlaySoundAtTransform(NotBuffer[1].name, Backspace.transform);
 		if (Playable)
 		{
 			if (TextBox.text.Length != 0)
@@ -186,7 +182,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	void PressSpaceBar()
 	{
 		SpaceBar.AddInteractionPunch(.2f);
-		Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
+		Audio.PlaySoundAtTransform(NotBuffer[1].name, SpaceBar.transform);
 		if (Playable && Enterable)
 		{
 			float width = 0;
@@ -225,7 +221,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	void PressEnter()
 	{
 		Enter.AddInteractionPunch(.2f);
-		Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
+		Audio.PlaySoundAtTransform(NotBuffer[1].name, Enter.transform);
 		if (Playable && Enterable)
 		{
 			StartCoroutine(TheCorrect());
@@ -235,7 +231,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	void PressShift(int Shifting)
 	{
 		ShiftButtons[Shifting].AddInteractionPunch(.2f);
-		Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
+		Audio.PlaySoundAtTransform(NotBuffer[1].name, ShiftButtons[Shifting].transform);
 		if (Shifted == true)
 		{
 			Shifted = false;
@@ -273,7 +269,7 @@ public class PlantIdentificationScript : MonoBehaviour
 		Debug.LogFormat("[Plant Identification #{0}] The plant's name that was shown: {1}", moduleId, SeedPacketIdentifier[Unique[Stages]].name);
 		SeedPacket.sprite = SeedPacketIdentifier[Unique[Stages]];
 		SeedPacket.material = ImageLighting[1];
-		Audio.PlaySoundAtTransform(Buffer[UnityEngine.Random.Range(0,5)].name, transform);
+		Audio.PlaySoundAtTransform(Buffer[Random.Range(0,5)].name, transform);
 		yield return new WaitForSecondsRealtime(5f);
 		SeedPacket.sprite = DefaultSprite;
 		SeedPacket.material = ImageLighting[0];
@@ -348,6 +344,7 @@ public class PlantIdentificationScript : MonoBehaviour
 		else
 		{
 			Debug.LogFormat("[Plant Identification #{0}] The text does not match the name of the plant. Oh no!", moduleId);
+			StrikeIncoming = true;
 			Animating1 = true;
 			SeedPacket.sprite = CheckOrCross[1];
 			SecondMusic.clip = NotBuffer[4];
@@ -396,6 +393,7 @@ public class PlantIdentificationScript : MonoBehaviour
 			Playable = true;
 			Toggleable = true;
 			Animating1 = false;
+			StrikeIncoming = false;
 			Stages = 0;
 			Module.HandleStrike();
 			Debug.LogFormat("[Plant Identification #{0}] The module resetted and striked as a cost for giving an incorrect answer.", moduleId);
@@ -407,7 +405,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	{
 		while (SecondMusic.isPlaying)
 		{
-			SeedPacket.sprite = SeedPacketIdentifier[UnityEngine.Random.Range(0, SeedPacketIdentifier.Count())];
+			SeedPacket.sprite = SeedPacketIdentifier[Random.Range(0, SeedPacketIdentifier.Count())];
 			yield return new WaitForSecondsRealtime(0.06f);
 		}
 	}
@@ -421,6 +419,7 @@ public class PlantIdentificationScript : MonoBehaviour
 	bool Intro = false;
 	bool ActiveBorder = false;
 	bool Animating1 = false;
+	bool StrikeIncoming = false;
 	string Current = "";
 	
 	IEnumerator ProcessTwitchCommand(string command)
@@ -677,5 +676,51 @@ public class PlantIdentificationScript : MonoBehaviour
 				Backspace.OnInteract();
 			}
 		}
+	}
+
+	IEnumerator TwitchHandleForcedSolve()
+    {
+		if (StrikeIncoming)
+        {
+			StopAllCoroutines();
+			SecondMusic.Stop();
+			LightBulbs[0].material = TheLights[1];
+			LightBulbs[1].material = TheLights[1];
+			LightBulbs[2].material = TheLights[1];
+			SeedPacket.sprite = Morticulturalist;
+			Module.HandlePass();
+			yield break;
+        }
+		int start = Stages;
+		for (int i = start; i < 3; i++)
+		{
+			while (!Playable) { yield return true; }
+			if (Toggleable)
+				Border.OnInteract();
+			while (!Enterable) { yield return true; }
+			if (TextBox.text != SeedPacketIdentifier[Unique[i]].name)
+            {
+				int clearNum = 0;
+				for (int j = 0; j < TextBox.text.Length; j++)
+				{
+					if (j == SeedPacketIdentifier[Unique[Stages]].name.Length)
+						break;
+					if (TextBox.text[j] != SeedPacketIdentifier[Unique[Stages]].name[j])
+					{
+						clearNum = j;
+						int target = TextBox.text.Length - j;
+						for (int k = 0; k < target; k++)
+						{
+							Backspace.OnInteract();
+							yield return new WaitForSeconds(0.05f);
+						}
+						break;
+					}
+				}
+				yield return ProcessTwitchCommand("type " + SeedPacketIdentifier[Unique[i]].name.Substring(clearNum));
+			}
+			Enter.OnInteract();
+		}
+		while (Animating1) { yield return true; }
 	}
 }
