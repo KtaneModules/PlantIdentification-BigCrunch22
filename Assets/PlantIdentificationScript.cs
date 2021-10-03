@@ -700,12 +700,12 @@ public class PlantIdentificationScript : MonoBehaviour
 			while (!Enterable) { yield return true; }
 			if (TextBox.text != SeedPacketIdentifier[Unique[i]].name)
             {
-				int clearNum = 0;
+				int clearNum = -1;
 				for (int j = 0; j < TextBox.text.Length; j++)
 				{
-					if (j == SeedPacketIdentifier[Unique[Stages]].name.Length)
+					if (j == SeedPacketIdentifier[Unique[i]].name.Length)
 						break;
-					if (TextBox.text[j] != SeedPacketIdentifier[Unique[Stages]].name[j])
+					if (TextBox.text[j] != SeedPacketIdentifier[Unique[i]].name[j])
 					{
 						clearNum = j;
 						int target = TextBox.text.Length - j;
@@ -717,7 +717,21 @@ public class PlantIdentificationScript : MonoBehaviour
 						break;
 					}
 				}
-				yield return ProcessTwitchCommand("type " + SeedPacketIdentifier[Unique[i]].name.Substring(clearNum));
+				if (clearNum == -1)
+                {
+					if (TextBox.text.Length > SeedPacketIdentifier[Unique[i]].name.Length)
+                    {
+						while (TextBox.text.Length > SeedPacketIdentifier[Unique[i]].name.Length)
+                        {
+							Backspace.OnInteract();
+							yield return new WaitForSeconds(0.05f);
+						}
+                    }
+					else
+						yield return ProcessTwitchCommand("type " + SeedPacketIdentifier[Unique[i]].name.Substring(TextBox.text.Length));
+				}
+				else
+					yield return ProcessTwitchCommand("type " + SeedPacketIdentifier[Unique[i]].name.Substring(clearNum));
 			}
 			Enter.OnInteract();
 		}
