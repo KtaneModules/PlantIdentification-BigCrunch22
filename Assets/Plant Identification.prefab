@@ -14628,6 +14628,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6f245f702965a79468b761ec34ee5133, type: 3}
   - {fileID: 21300000, guid: 08ed9dee79b8d5b498fdcbaff8486eb1, type: 3}
   - {fileID: 21300000, guid: 0cd0571dd77e967428774a16f64e3dd5, type: 3}
+  - {fileID: 21300000, guid: 5949d55e9a3104c48a756035534d50fc, type: 3}
+  - {fileID: 21300000, guid: a7dcd14247303664a9841476a23c552d, type: 3}
   DefaultSprite: {fileID: 21300000, guid: f77872fa18c1eb446aa4afb12979fdd3, type: 3}
   CheckOrCross:
   - {fileID: 21300000, guid: acee479f998eb1e4d81afb29b8c5e089, type: 3}
