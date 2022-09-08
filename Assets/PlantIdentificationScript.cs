@@ -33,14 +33,16 @@ public class PlantIdentificationScript : MonoBehaviour
     public TextMesh TextBox;
     public GameObject TheBox;
     
-    bool Shifted = false;
+    bool Shifted = false, CapsLocked = false;
     
     public AudioClip[] NotBuffer;
     public AudioClip[] Buffer;
     
-    string[][] ChangedText = new string[2][]{
+    string[][] ChangedText = new string[4][]{
         new string[47] {"`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "\\", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/"},
-        new string[47] {"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "\"", "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"}
+        new string[47] {"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}", "|", "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "\"", "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"},
+		new string[47] {"`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/"},
+		new string[47] {"~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "{", "}", "|", "a", "s", "d", "f", "g", "h", "j", "k", "l", ":", "\"", "z", "x", "c", "v", "b", "n", "m", "<", ">", "?"}
     };
     
     private KeyCode[] TypableKeys =
@@ -63,14 +65,11 @@ public class PlantIdentificationScript : MonoBehaviour
     
     private KeyCode[] OtherKeys =
     {
-        KeyCode.Backspace, KeyCode.Return, KeyCode.Space,
+        KeyCode.Backspace, KeyCode.Return, KeyCode.Space, KeyCode.CapsLock
     };
     
     int[] Unique = {0, 0, 0};
-    
-    bool Playable = false;
-    bool Enterable = false;
-    bool Toggleable = true;
+    bool Playable = false, Enterable = false, Toggleable = true;
     private bool focused;
     int Stages = 0;
     
@@ -104,18 +103,22 @@ public class PlantIdentificationScript : MonoBehaviour
         for (int c = 0; c < UselessButtons.Count(); c++)
         {
             int Useless = c;
-            UselessButtons[Useless].OnInteract += delegate
-            {
-                UselessButtons[Useless].AddInteractionPunch(.2f);
-                Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
-                return false;
-            };
+			if (Useless != 1)
+			{
+				UselessButtons[Useless].OnInteract += delegate
+				{
+					UselessButtons[Useless].AddInteractionPunch(.2f);
+					Audio.PlaySoundAtTransform(NotBuffer[1].name, transform);
+					return false;
+				};
+			}
         }
         
         Backspace.OnInteract += delegate () { PressBackspace(); return false; };
         Enter.OnInteract += delegate () { PressEnter(); return false; };
         SpaceBar.OnInteract += delegate () { PressSpaceBar(); return false; };
         Border.OnInteract += delegate () { PressBorder(); return false; };
+		UselessButtons[1].OnInteract += delegate () { PressCapsLock(); return false; };
         GetComponent<KMSelectable>().OnFocus += delegate () { focused = true; };
         GetComponent<KMSelectable>().OnDefocus += delegate () { focused = false; };
         if (Application.isEditor)
@@ -137,15 +140,14 @@ public class PlantIdentificationScript : MonoBehaviour
     
     void UniquePlay()
     {
-        for (int c = 0; c < Unique.Count(); c++)
-        {
-            Unique[c] = Random.Range(0, SeedPacketIdentifier.Count());
-        }
-        
-        if (Unique[0] == Unique[1] || Unique[0] == Unique[2] || Unique[1] == Unique[2])
-        {
-            UniquePlay();
-        }
+		do
+		{
+			for (int c = 0; c < Unique.Count(); c++)
+			{
+				Unique[c] = Random.Range(0, SeedPacketIdentifier.Count());
+			}	
+		}
+        while (Unique[0] == Unique[1] || Unique[0] == Unique[2] || Unique[1] == Unique[2]);
     }
     
     IEnumerator Reintroduction()
@@ -184,9 +186,7 @@ public class PlantIdentificationScript : MonoBehaviour
                 TextBox.text += Text[KeyPress].text;
                 if (width > 0.28)
                 {
-                    string Copper = TextBox.text;
-                    Copper = Copper.Remove(Copper.Length - 1);
-                    TextBox.text = Copper;
+					TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
                 }
             }
         }
@@ -200,9 +200,7 @@ public class PlantIdentificationScript : MonoBehaviour
         {
             if (TextBox.text.Length != 0)
             {
-                string Copper = TextBox.text;
-                Copper = Copper.Remove(Copper.Length - 1);
-                TextBox.text = Copper;
+                TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
             }
         }
     }
@@ -229,9 +227,7 @@ public class PlantIdentificationScript : MonoBehaviour
                 TextBox.text += " ";
                 if (width > 0.28)
                 {
-                    string Copper = TextBox.text;
-                    Copper = Copper.Remove(Copper.Length - 1);
-                    TextBox.text = Copper;
+                    TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
                 }
             }
         }
@@ -255,38 +251,34 @@ public class PlantIdentificationScript : MonoBehaviour
             StartCoroutine(TheCorrect());
         }
     }
+	
+	void PressCapsLock()
+    {
+		UselessButtons[1].AddInteractionPunch(.2f);
+        Audio.PlaySoundAtTransform(NotBuffer[1].name, UselessButtons[1].transform);
+        if (Playable && Enterable)
+        {
+			CapsLocked = CapsLocked ? false : true;
+			for (int b = 0; b < Text.Count(); b++)
+			{
+				Text[b].text = Shifted ? CapsLocked ? ChangedText[3][b] : ChangedText[1][b] : CapsLocked ? ChangedText[2][b] : ChangedText[0][b];
+			}
+		}
+	}
     
     void PressShift(int Shifting)
     {
         ShiftButtons[Shifting].AddInteractionPunch(.2f);
         Audio.PlaySoundAtTransform(NotBuffer[1].name, ShiftButtons[Shifting].transform);
-        if (Shifted == true)
+		if (Playable && Enterable)
         {
-            Shifted = false;
-            StartingNumber = 0;
-        }
-        
-        else
-        {
-            Shifted = true;
-            StartingNumber = 1;
-        }
-        
-        if (Shifted == true)
-        {
-            for (int b = 0; b < Text.Count(); b++)
-            {
-                Text[b].text = ChangedText[1][b];
-            }
-        }
-        
-        else
-        {
-            for (int a = 0; a < Text.Count(); a++)
-            {
-                Text[a].text = ChangedText[0][a];
-            }
-        }
+			StartingNumber = Shifted ? 0 : 1;
+			Shifted = Shifted ? false: true;
+			for (int b = 0; b < Text.Count(); b++)
+			{
+				Text[b].text = Shifted ? CapsLocked ? ChangedText[3][b] : ChangedText[1][b] : CapsLocked ? ChangedText[2][b] : ChangedText[0][b];
+			}
+		}
     }
     
     IEnumerator PlayTheQueue()
@@ -451,14 +443,14 @@ public class PlantIdentificationScript : MonoBehaviour
             }
             for (int j = 0; j < ShiftKeys.Count(); j++)
             {
-                if (Input.GetKeyDown(ShiftKeys[j]))
+                if ((Input.GetKeyDown(ShiftKeys[j]) && !Shifted) || Input.GetKeyUp(ShiftKeys[j]))
                 {
                     ShiftButtons[j].OnInteract();
                 }
             }
             for (int k = 0; k < UselessKeys.Count(); k++)
             {
-                if (Input.GetKeyDown(UselessKeys[k]))
+                if (Input.GetKeyDown(UselessKeys[k]) && k != 1)
                 {
                     UselessButtons[k].OnInteract();
                 }
@@ -475,6 +467,8 @@ public class PlantIdentificationScript : MonoBehaviour
                             Enter.OnInteract(); break;
                         case 2:
                             SpaceBar.OnInteract(); break;
+						case 3:
+							UselessButtons[1].OnInteract(); break;
                         default:
                             break;
                     }
@@ -532,11 +526,17 @@ public class PlantIdentificationScript : MonoBehaviour
                 {
                     if (!c.ToString().EqualsAny(ChangedText[0]) && !c.ToString().EqualsAny(ChangedText[1]))
                     {
-                        yield return "sendtochaterror The command being submitted contains a character that is not + typable in the given keyboard";
+                        yield return "sendtochaterror The command being submitted contains a character that is not typable in the given keyboard";
                         yield break;
                     }
                 }
             }
+			
+			if (CapsLocked)
+			{
+				UselessButtons[1].OnInteract();
+				yield return new WaitForSeconds(0.01f);
+			}
             
             for (int y = 0; y < parameters.Length - 1; y++)
             {
