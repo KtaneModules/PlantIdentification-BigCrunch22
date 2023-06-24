@@ -222,7 +222,7 @@ public class PlantIdentificationScript : MonoBehaviour
             }
             width =  width * TextBox.characterSize * 0.1f;
             
-            if (width < 0.28f)
+            if (width < 0.28f && TextBox.text[TextBox.text.Length - 1].ToString() != " ")
             {
                 TextBox.text += " ";
                 if (width > 0.28)
@@ -300,6 +300,11 @@ public class PlantIdentificationScript : MonoBehaviour
     
     IEnumerator TheCorrect()
     {
+		if (TextBox.text[TextBox.text.Length - 1].ToString() == " ")
+		{
+			Debug.Log("THIS CODE WAS CHECKED");
+			TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
+		}
         string Analysis = TextBox.text;
         TextBox.text = "";
         Debug.LogFormat("[Plant Identification #{0}] Text that was submitted: {1}", moduleId, Analysis);
