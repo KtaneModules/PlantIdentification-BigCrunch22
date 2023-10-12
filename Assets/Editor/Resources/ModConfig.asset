@@ -14,8 +14,8 @@ MonoBehaviour:
   id: PlantIdentification
   title: Plant Identification
   author: BigCrunch22
-  description: "\"Basic zombie learning material. Learn what to eat.\"\r\n\r\nIdea/Implementor
-    - BigCrunch22\r\n\nTP Supported!\n\r\nIf someone wants to add TP Support/Logging/Anything
+  description: "\"Basic zombie learning material. Learn what to eat.\"\r\n\r\nIdea/Implementer
+    - BigCrunch22\r\n\r\nTP Supported!\r\n\r\nIf someone wants to add TP Support/Logging/Anything
     useful, you have my approval for that."
   version: 1.0
   outputFolder: build

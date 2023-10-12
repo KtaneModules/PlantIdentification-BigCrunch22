@@ -305,7 +305,7 @@ public class PlantIdentificationScript : MonoBehaviour
 			Debug.Log("THIS CODE WAS CHECKED");
 			TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
 		}
-        string Analysis = TextBox.text;
+        string Analysis = TextBox.text.Replace('’', '\'').Replace('`', '\'').Replace('‘', '\'').Replace('´', '\'');
         TextBox.text = "";
         Debug.LogFormat("[Plant Identification #{0}] Text that was submitted: {1}", moduleId, Analysis);
         if (Analysis == SeedPacketIdentifier[Unique[Stages]].name)
