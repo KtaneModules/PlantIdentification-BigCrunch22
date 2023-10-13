@@ -222,7 +222,7 @@ public class PlantIdentificationScript : MonoBehaviour
             }
             width =  width * TextBox.characterSize * 0.1f;
             
-            if (width < 0.28f && TextBox.text[TextBox.text.Length - 1].ToString() != " ")
+            if (width < 0.28f && TextBox.text.Length != 0 && TextBox.text[TextBox.text.Length - 1].ToString() != " ")
             {
                 TextBox.text += " ";
                 if (width > 0.28)
@@ -300,12 +300,9 @@ public class PlantIdentificationScript : MonoBehaviour
     
     IEnumerator TheCorrect()
     {
-		if (TextBox.text[TextBox.text.Length - 1].ToString() == " ")
-		{
-			Debug.Log("THIS CODE WAS CHECKED");
-			TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
-		}
-        string Analysis = TextBox.text.Replace('’', '\'').Replace('`', '\'').Replace('‘', '\'').Replace('´', '\'');
+        if (TextBox.text.Length != 0 && TextBox.text[TextBox.text.Length - 1].ToString() == " ")
+            TextBox.text = TextBox.text.Remove(TextBox.text.Length - 1);
+        string Analysis = TextBox.text.Replace('`', '\'');
         TextBox.text = "";
         Debug.LogFormat("[Plant Identification #{0}] Text that was submitted: {1}", moduleId, Analysis);
         if (Analysis == SeedPacketIdentifier[Unique[Stages]].name)
